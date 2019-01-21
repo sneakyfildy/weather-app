@@ -5,7 +5,7 @@ import { setTextFilter, submitFilter, clearFilter } from '../actions/filters';
 class CitySelector extends React.Component {
     state = {};
 
-    onKeyDown(e) {debugger
+    onKeyDown(e) {
         switch(e.keyCode) {
             case 13: // ENTER
                 this.props.dispatch(submitFilter(e.target.value));

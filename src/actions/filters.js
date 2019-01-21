@@ -7,7 +7,7 @@ export const setTextFilter = (filterText = '') => ({
 
 export const submitFilter = (filterText = '') => ({
     type: types.CITY_FILTER_SUBMIT,
-    text: filterText
+    value: filterText
 });
 
 export const clearFilter = () => ({

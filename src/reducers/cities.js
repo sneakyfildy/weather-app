@@ -1,7 +1,8 @@
 import uuid from 'uuid';
 
 import types from '../action_types';
-// // Don't know how this data is going to be really used, so putting
+import selectCities from '../selectors/cities';
+// Don't know how this data is going to be really used, so putting
 // hardcoded set of cities here at the moment
 const citiesReducerDefaultState = {
     items: [
@@ -30,6 +31,16 @@ export default (state = citiesReducerDefaultState, action) => {
                 selectedId: action.value,
                 selectedItem: state.items.filter((item) => item.id === action.value)[0]
             };
+        case types.CITY_FILTER_SUBMIT:
+            if (!!action.value) {
+                const matchingItems = selectCities(state.items, {text: action.value});
+                return {
+                    ...state,
+                    selectedId: matchingItems[0] && matchingItems[0].id || null,
+                    selectedItem: matchingItems[0] || null
+
+                };
+            } else return state
         default:
             return state;
     }
