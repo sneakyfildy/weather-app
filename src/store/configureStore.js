@@ -1,4 +1,5 @@
-import { createStore, combineReducers } from 'redux';
+import { createStore, combineReducers, applyMiddleware } from 'redux';
+import thunkMiddleware from 'redux-thunk';
 import citiesReducer from '../reducers/cities';
 import filtersReducer from '../reducers/filters';
 
@@ -9,7 +10,8 @@ export default () => {
         combineReducers({
             cities: citiesReducer,
             filters: filtersReducer
-        })
+        }),
+        applyMiddleware(thunkMiddleware)
     );
 
     return store;
