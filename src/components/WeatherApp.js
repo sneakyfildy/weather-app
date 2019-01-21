@@ -1,4 +1,6 @@
 import React from 'react';
+import CitySelector from './CitySelector';
+import CityList from './CityList';
 
 export default class WeatherApp extends React.Component {
     constructor (props){
@@ -18,6 +20,8 @@ export default class WeatherApp extends React.Component {
         return (
             <div>
                 <h2>{this.title}</h2>
+                <CitySelector />
+                <CityList />
             </div>
         );
     }

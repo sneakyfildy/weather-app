@@ -1,0 +1,3 @@
+export default {
+    SET_CITY_TEXT_FILTER: 'SET_CITY_TEXT_FILTER'
+}
