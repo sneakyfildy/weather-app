@@ -6,10 +6,20 @@ const cityFilterDefaultState = {
 
 export default (state = cityFilterDefaultState, action) => {
     switch (action.type) {
-        case types.SET_CITY_TEXT_FILTER:
+        case types.CITY_FILTER_CHANGE:
             return {
                 ...state,
                 text: action.text
+            };
+        case types.CITY_FILTER_SUBMIT:
+            return {
+                ...state,
+                text: action.text
+            };
+        case types.CITY_FILTER_CLEAR:
+            return {
+                ...state,
+                text: ''
             };
         default:
             return state;
