@@ -1,3 +1,4 @@
+  require('dotenv').config({path: '.env.development'});
   const firebase = require('firebase');
   const config = {
     apiKey: process.env.FIREBASE_API_KEY,
@@ -8,4 +9,4 @@
     messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID
   };
   firebase.initializeApp(config);
-  firebase.database().ref('ololo2').push({'test': config.messagingSenderId});
+  firebase.database().ref('ololo2').push({'test': Math.random()});

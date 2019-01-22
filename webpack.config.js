@@ -49,7 +49,6 @@ module.exports = (env) => {
                 filename: isProd ? "app.bundle.min.css" : "app.bundle.css"
             }),
             new NodemonPlugin({
-                //args: [ '--mode=\'production\'', 'cross-env azaza=ololo', 'ZHOPA' ],
                 args: [`--APP_MODE=${mode}`],
                 script: './server/server.js',
                 watch: [path.resolve('./dist'), './server/'],
