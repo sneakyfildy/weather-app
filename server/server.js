@@ -16,9 +16,17 @@ const bodyParser = require('body-parser');
 
 const FirebaseDBI = require('./data/FirebaseDBI');
 const returnStatus = require('./network/returnStatus');
+const AbstractServer = require('./network/AbstractServer');
 
-class ServerConstructor {
+class ServerConstructor extends AbstractServer {
     constructor () {
+        super();
+        this.weatherApiMap = {
+            GET: (req, res) => this.handleGetWeatherData(req, res),
+            POST: (req, res) => this.handlePostWeatherData(req, res),
+            DELETE: (req, res) => this.handleClearWeatherData(req, res)
+        };
+
         this.weatherDbi = new FirebaseDBI(firebase, 'weather');
         this.app = express();
         const http = httpModule.Server(this.app);
@@ -55,17 +63,40 @@ class ServerConstructor {
         this.app.use(express.static("dist"));
         this.app.use( bodyParser.json() );
 
+        // GET
+        this.app.get('/api/weather', this.handleApiRequest.bind(this, this.weatherApiMap.GET));
         // CREATE
-        this.app.post('/api/weather', (req, res) => {
-            this.handlePostWeatherData(req, res);
-        });
+        this.app.post('/api/weather', this.handleApiRequest.bind(this, this.weatherApiMap.POST));
         // CLEAR
-        this.app.delete('/api/weather', (req, res) => {
-            this.handleClearWeatherData(req, res);
-        });
+        this.app.delete('/api/weather', this.handleApiRequest.bind(this, this.weatherApiMap.DELETE));
 
         this.app.get("/", this.indexPage.bind(this));
     }
+
+    handleGetWeatherData (req, res) {
+        console.log('GET', req.body, req.params, req.query);
+        try {
+            this.weatherDbi.getItems(req.query)
+                .then((snapshot) => {
+                    let val = snapshot.val();
+                    let arr = [];
+                    snapshot.forEach((snapshotItem) => {
+                        arr.push({
+                            __key__: snapshotItem.key,
+                            ...snapshotItem.val()
+                        });
+                    });
+                    //console.log('snapshot', val, arr);
+                    res.end(returnStatus.successResponse(arr));
+                })
+                .catch((err) => {
+                    this.returnError(res, 500, 'Something went wrong adding new weather data', err);
+                });
+        } catch(err) {
+            this.returnError(res, 500, 'Something went wrong adding new weather data', err);
+        }
+    }
+
 
     handlePostWeatherData (req, res) {
         console.log('POST', req.body);
@@ -84,20 +115,6 @@ class ServerConstructor {
         } catch(err) {
             this.returnError(res, 500, 'Something went wrong clearing all weather data', err);
         }
-    }
-
-    handleGetWeatherByPlace (req, initialResponse) {
-        axios.get('https://openweathermap.org/data/2.5/forecast/?appid=b6907d289e10d714a6e88b30761fae22&id=3104324&units=metric')
-            .then((result) => {
-                initialResponse.end(JSON.stringify(result.data));
-            })
-            .catch((result) => {
-                console.log(result);
-                initialResponse.status(500).end('no');
-            })
-            .then((result) => {
-                initialResponse.status(500).end('no');
-            });
     }
 
     returnError (res, status, prodErrorMessage, exception) {

@@ -1,7 +1,8 @@
 module.exports = {
-    successResponse: function() {
+    successResponse: function(additionalData) {
         return JSON.stringify({
-            success: true
+            success: true,
+            data: additionalData
         });
     },
     errorResponse: function (errorReason) {
