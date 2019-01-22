@@ -1,0 +1,2 @@
+heroku couldn't build with latest (16.7.0) react/react-dom/react-redux versions,
+had to experimentally find which closest previous version works

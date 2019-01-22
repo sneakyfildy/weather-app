@@ -1,3 +1,4 @@
+require('./firebase/firebase');
 const port = process.env.PORT || 5556;
 const express = require("express");
 const httpModule = require("http");
