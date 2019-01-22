@@ -1,0 +1,8 @@
+.clickable {
+  cursor: pointer;
+  border: 1px dashed; }
+
+.first-matching {
+  background: #555;
+  color: #fff; }
+

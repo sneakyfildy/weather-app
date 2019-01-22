@@ -12,4 +12,4 @@ const appTpl = (
   </Provider>
 );
 
-ReactDOM.render(appTpl, document.getElementById('app'));
+ReactDOM.render(appTpl, window.document.getElementById('app'));

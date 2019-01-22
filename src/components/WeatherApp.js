@@ -1,3 +1,4 @@
+import '../styles/base.scss';
 import React from 'react';
 import CitySelector from './CitySelector';
 import CityList from './CityList';
