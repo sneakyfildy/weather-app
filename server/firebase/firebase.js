@@ -9,4 +9,5 @@
     messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID
   };
   firebase.initializeApp(config);
-  firebase.database().ref('ololo2').push({'test': Math.random()});
+
+  module.exports = firebase;

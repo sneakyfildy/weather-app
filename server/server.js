@@ -1,4 +1,4 @@
-require('./firebase/firebase');
+const firebase = require('./firebase/firebase');
 const port = process.env.PORT || 5556;
 const express = require("express");
 const httpModule = require("http");
@@ -8,20 +8,22 @@ const axios = require('axios');
 const argv = require('yargs').argv;
 // production is always better
 const mode = argv.APP_MODE === 'development' ? 'development' : 'production';
+const isProd = mode === 'production';
 console.log(`Node.js Server Mode: ${mode}`);
 httpModule.globalAgent.options.ca = require('ssl-root-cas/latest').create();
-var ServerReact = new ServerConstructor('react');
-ServerReact.init();
+const bodyParser = require('body-parser');
 
-function ServerConstructor() {
-    var app;
+const FirebaseDBI = require('./data/FirebaseDBI');
+const returnStatus = require('./network/returnStatus');
+console.log(returnStatus);
 
-    app = express();
-    const http = httpModule.Server(app);
-    //socket(http);
-    this.port = port;
-
-    this.init = function () {
+class ServerConstructor {
+    constructor () {
+        this.weatherDbi = new FirebaseDBI(firebase, 'weather');
+        this.app = express();
+        const http = httpModule.Server(this.app);
+        //socket(http);
+        this.port = port;
         this.setupPaths();
 
 //        socket.on("connection", function (socket) {
@@ -36,28 +38,55 @@ function ServerConstructor() {
         });
 
         return this;
-    };
+    }
 
-    this.indexPage = function (req, res) {
+    indexPage (req, res) {
         this.type === res.render("index", {
             title: "Weather app",
             env: {
-                isProd: mode === 'production'
+                isProd: isProd
             }
         });
     };
 
-    this.setupPaths = function () {
-        app.set("view engine", "jade");
-        app.set('views', path.join(__dirname, 'views'));
-        app.use(express.static("dist"));
+    setupPaths () {
+        this.app.set("view engine", "jade");
+        this.app.set('views', path.join(__dirname, 'views'));
+        this.app.use(express.static("dist"));
+        this.app.use( bodyParser.json() );
 
-        app.get("/place", this.handleGetWeatherByPlace.bind(this));
+        // CREATE
+        this.app.post('/api/weather', (req, res) => {
+            this.handlePostWeatherData(req, res);
+        });
+        // CLEAR
+        this.app.delete('/api/weather', (req, res) => {
+            this.handleClearWeatherData(req, res);
+        });
 
-        app.get("/", this.indexPage.bind(this));
-    };
+        this.app.get("/", this.indexPage.bind(this));
+    }
 
-    this.handleGetWeatherByPlace = function(req, initialResponse) {
+    handlePostWeatherData (req, res) {
+        console.log(req.body);
+        try {
+            this.weatherDbi.addItem(req.body);
+            res.end(returnStatus.successResponse());
+        } catch(err) {
+            this.returnError(res, 500, 'Something went wrong adding new weather data', err);
+        }
+    }
+
+    handleClearWeatherData (req, res) {
+        try {
+            this.weatherDbi.clear();
+            res.end(returnStatus.successResponse());
+        } catch(err) {
+            this.returnError(res, 500, 'Something went wrong clearing all weather data', err);
+        }
+    }
+
+    handleGetWeatherByPlace (req, initialResponse) {
         axios.get('https://openweathermap.org/data/2.5/forecast/?appid=b6907d289e10d714a6e88b30761fae22&id=3104324&units=metric')
             .then((result) => {
                 initialResponse.end(JSON.stringify(result.data));
@@ -69,5 +98,15 @@ function ServerConstructor() {
             .then((result) => {
                 initialResponse.status(500).end('no');
             });
-    };
+    }
+
+    returnError (res, status, prodErrorMessage, exception) {
+       return res
+           .status(status)
+           .end( returnStatus.errorResponse(isProd ? prodErrorMessage : exception.message) );
+    }
+
+
 }
+
+new ServerConstructor();
