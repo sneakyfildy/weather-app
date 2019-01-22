@@ -2,11 +2,11 @@ const firebase = require('./firebase/firebase');
 const isTest = process.env.NODE_ENV === 'test';
 const port = isTest ? 6666 : (process.env.PORT || 5556);
 
-const express = require("express");
-const httpModule = require("http");
+const express = require('express');
+const httpModule = require('http');
 const path = require('path');
 const axios = require('axios');
-//const socket = require("socket.io");
+//const socket = require('socket.io');
 const argv = require('yargs').argv;
 const isProd = argv.APP_MODE === 'production';
 
@@ -17,6 +17,7 @@ const bodyParser = require('body-parser');
 const FirebaseDBI = require('./data/FirebaseDBI');
 const returnStatus = require('./network/returnStatus');
 const AbstractServer = require('./network/AbstractServer');
+const networkMessages = require('../server/network/messages');
 
 class ServerConstructor extends AbstractServer {
     constructor () {
@@ -34,23 +35,23 @@ class ServerConstructor extends AbstractServer {
         this.port = port;
         this.setupPaths();
 
-//        socket.on("connection", function (socket) {
-//            console.log("a user connected");
-//            socket.on("disconnect", function () {
-//                console.log("user disconnected");
+//        socket.on('connection', function (socket) {
+//            console.log('a user connected');
+//            socket.on('disconnect', function () {
+//                console.log('user disconnected');
 //            });
 //        });
 
         http.listen(this.port, () => {
-            console.log("Server started; port: " + this.port);
+            console.log('Server started; port: ' + this.port);
         });
 
         return this;
     }
 
     indexPage (req, res) {
-        this.type === res.render("index", {
-            title: "Weather app",
+        this.type === res.render('index', {
+            title: 'Weather app',
             env: {
                 isProd: isProd
             }
@@ -58,9 +59,9 @@ class ServerConstructor extends AbstractServer {
     };
 
     setupPaths () {
-        this.app.set("view engine", "jade");
+        this.app.set('view engine', 'jade');
         this.app.set('views', path.join(__dirname, 'views'));
-        this.app.use(express.static("dist"));
+        this.app.use(express.static('dist'));
         this.app.use( bodyParser.json() );
 
         // GET
@@ -70,7 +71,11 @@ class ServerConstructor extends AbstractServer {
         // CLEAR
         this.app.delete('/api/weather', this.handleApiRequest.bind(this, this.weatherApiMap.DELETE));
 
-        this.app.get("/", this.indexPage.bind(this));
+        this.app.get('/', this.indexPage.bind(this));
+        this.app.use((req, res) => {
+            res.setHeader('Content-Type', 'application/json');
+            this.returnError(res, 404, networkMessages.API_NOT_FOUND);
+        });
     }
 
     handleGetWeatherData (req, res) {
@@ -117,10 +122,14 @@ class ServerConstructor extends AbstractServer {
         }
     }
 
-    returnError (res, status, prodErrorMessage, exception) {
-       return res
-           .status(status)
-           .end( returnStatus.errorResponse(isProd ? prodErrorMessage : exception.message) );
+    returnError(res, status, prodErrorMessage, exception) {
+        // message selection logic: if this is 'prod' or there is no exception,
+        // then use prodErrorMessage, otherwise - exception (not a prod and got exception)
+        return res
+            .status(status)
+            .end(returnStatus
+                .errorResponse(isProd || !exception ? prodErrorMessage : exception.message)
+            );
     }
 
 

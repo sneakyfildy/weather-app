@@ -25,8 +25,8 @@ describe('WeatherDBI', () => {
            });
     });
 
-    describe('/POST weather', () => {
-        it('it should create one weather record', (done) => {
+    describe('/POST & /GET weather', () => {
+        it('it should create one weather record and get one record afterwards', (done) => {
             let expectedValue = Math.random();
             chai.request(server.app)
                 .post('/api/weather')
