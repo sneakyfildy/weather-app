@@ -3,11 +3,11 @@ const AbstractFirebaseDBI = require('./AbstractFirebaseDBI');
 class FirebaseDBI extends AbstractFirebaseDBI{
 
     addItem(item) {
-        this.getRoot().push(item);
+        return this.getRoot().push(item);
     }
 
-    clear(item) {
-        this.getRoot().set({});
+    clear() {
+        return this.getRoot().set({});
     }
 
     getRoot() {

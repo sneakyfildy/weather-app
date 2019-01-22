@@ -1,21 +1,21 @@
 const firebase = require('./firebase/firebase');
-const port = process.env.PORT || 5556;
+const isTest = process.env.NODE_ENV === 'test';
+const port = isTest ? 6666 : (process.env.PORT || 5556);
+
 const express = require("express");
 const httpModule = require("http");
 const path = require('path');
 const axios = require('axios');
 //const socket = require("socket.io");
 const argv = require('yargs').argv;
-// production is always better
-const mode = argv.APP_MODE === 'development' ? 'development' : 'production';
-const isProd = mode === 'production';
-console.log(`Node.js Server Mode: ${mode}`);
+const isProd = argv.APP_MODE === 'production';
+
+console.log(`Node.js Server isProd: ${isProd}`);
 httpModule.globalAgent.options.ca = require('ssl-root-cas/latest').create();
 const bodyParser = require('body-parser');
 
 const FirebaseDBI = require('./data/FirebaseDBI');
 const returnStatus = require('./network/returnStatus');
-console.log(returnStatus);
 
 class ServerConstructor {
     constructor () {
@@ -68,7 +68,7 @@ class ServerConstructor {
     }
 
     handlePostWeatherData (req, res) {
-        console.log(req.body);
+        console.log('POST', req.body);
         try {
             this.weatherDbi.addItem(req.body);
             res.end(returnStatus.successResponse());
@@ -109,4 +109,5 @@ class ServerConstructor {
 
 }
 
-new ServerConstructor();
+const backendInstance = new ServerConstructor();
+module.exports = backendInstance;

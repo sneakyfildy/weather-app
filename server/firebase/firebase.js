@@ -1,4 +1,7 @@
-  require('dotenv').config({path: '.env.development'});
+  const isTest = process.env.NODE_ENV === 'test';
+  require('dotenv').config({path: isTest ? '.env.test' : '.env.development'});
+  console.log(`Firebase test mode: ${isTest}`);
+
   const firebase = require('firebase');
   const config = {
     apiKey: process.env.FIREBASE_API_KEY,
