@@ -16,8 +16,10 @@ port when needed and stopping afterwards, writes into test firebase DB)
 I've used "npm run watch" + "npm run test:watch" during development
 
 You will need two .env files - I will attach it to e-mail
-put them in a root folder
-github: https://github.com/sneakyfildy/weather-app
-heroku: https://weather-app-sneakyfildy.herokuapp.com  
+put them in a root folder.
+
+ - github: https://github.com/sneakyfildy/weather-app
+
+ - heroku: https://weather-app-sneakyfildy.herokuapp.com
 
 
