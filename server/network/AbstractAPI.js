@@ -14,11 +14,14 @@ class AbstractAPI extends AbstractNetworkComponent {
 
     init(expressApp) {
         // GET
-        expressApp.get(`/api/${this.apiName}`, this.handleApiRequest.bind(this, this.networkGet));
+        expressApp.get(`/api/${this.apiName}`,
+            this.handleApiRequest.bind(this, this.networkGet));
         // CREATE
-        expressApp.post(`/api/${this.apiName}`, this.handleApiRequest.bind(this, this.networkPost));
+        expressApp.post(`/api/${this.apiName}`,
+            this.handleApiRequest.bind(this, this.networkPost));
         // CLEAR
-        expressApp.delete(`/api/${this.apiName}`, this.handleApiRequest.bind(this, this.networkDelete));
+        expressApp.delete(`/api/${this.apiName}`,
+            this.handleApiRequest.bind(this, this.networkDelete));
     }
 
     handleApiRequest(handlerFn, req, res) {
@@ -39,7 +42,6 @@ class AbstractAPI extends AbstractNetworkComponent {
                             ...snapshotItem.val()
                         });
                     });
-                    //console.log('snapshot', val, arr);
                     res.end(returnStatus.successResponse(arr));
                 })
                 .catch((err) => {

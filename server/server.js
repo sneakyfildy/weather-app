@@ -43,12 +43,12 @@ class ServerConstructor extends AbstractNetworkComponent {
     }
 
     indexPage (req, res) {
+        // will try to get city by IP
         var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress; //'194.15.118.79'
         if (ip.match(/^(([1-9]?\d|1\d\d|2[0-5][0-5]|2[0-4]\d)\.){3}([1-9]?\d|1\d\d|2[0-5][0-5]|2[0-4]\d)$/)) {
             // just the simplest regex, randomely found on SOF
             axios.get(`https://ipinfo.io/${ip}/`)
                 .then((ipQueryResult) => {
-                    //console.log('answer:', ipQueryResult.data.city);
                     this._renderIndex(res, ip, ipQueryResult.data.city);
                 });
         } else {
@@ -81,12 +81,10 @@ class ServerConstructor extends AbstractNetworkComponent {
         this.cityAPI.init(this.app);
 
         this.app.get('/api/*', (req, res) => {
-            //this.indexPage(req, res);
             res.setHeader('Content-Type', 'application/json');
             this.returnError(res, 404, networkMessages.API_NOT_FOUND);
         });
 
-        //this.app.get('/', this.indexPage.bind(this));
         this.app.get('*', this.indexPage.bind(this));
 
     }
