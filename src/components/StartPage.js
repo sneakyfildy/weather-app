@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 import { withRouter } from "react-router";
 //
 import { getCities } from '../actions/db';
+import Globals from '../globals/Globals';
+import MemoryLS from '../services/MemoryLS';
 
 export class StartPage extends React.Component {
     constructor(props) {
@@ -13,7 +15,17 @@ export class StartPage extends React.Component {
         };
     }
     componentDidMount() {
-        this.props.history.push('/new-location');
+        try {
+            const detectedCity = Globals.get('city');
+            const storedLastCity = MemoryLS.getLastCity().title;
+            if (storedLastCity || detectedCity) {
+                console.log('stored/detected city:', storedLastCity, detectedCity);
+                const cityToUse = (storedLastCity || detectedCity).toLowerCase();
+                this.props.history.push('/' + cityToUse);
+            }
+        } catch (err) {
+            console.error('Can not process stored/detected city', err);
+        }
     }
     componentDidUpdate(prevProps, prevState) {
     }
@@ -30,6 +42,6 @@ export class StartPage extends React.Component {
 
 // Create a new component that is "connected" (to borrow redux
 // terminology) to the router.
-const StartPageWithRouter = withRouter(StartPage);
+const StartPageWithRouter = withRouter(connect()(StartPage));
 
-export default connect()(StartPageWithRouter)
+export default StartPageWithRouter

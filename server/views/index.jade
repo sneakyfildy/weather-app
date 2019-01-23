@@ -9,9 +9,13 @@ html()
 
     meta(contet='text/html; charset=UTF-8', http-equiv='Content-Type')
     meta(name='viewport', content='width=device-width, initial-scale=1.0')
-
+    script.
+        // may be remade via API
+        window['__WEATHER_APP_GLOBALS__'] = {
+            ip: '#{env.clientIp}',
+            city: '#{env.clientCity}'
+        };
   body()
-    span #{env.clientIp}
     div(id="app")
     if !!env.isProd
         script(type='text/javascript', src='/app.bundle.min.js')

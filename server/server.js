@@ -10,7 +10,7 @@ const axios = require('axios');
 const argv = require('yargs').argv;
 const isProd = argv.APP_MODE === 'production';
 
-console.log(`Node.js Server isProd: ${isProd}`);
+console.log(`Node.js Server isProd: ${isProd}`, argv);
 httpModule.globalAgent.options.ca = require('ssl-root-cas/latest').create();
 const bodyParser = require('body-parser');
 
@@ -43,19 +43,30 @@ class ServerConstructor extends AbstractNetworkComponent {
     }
 
     indexPage (req, res) {
-        var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-        let axios = require('axios');
-        console.log('ip', ip);
-        axios.get(`https://ipinfo.io/${ip}/`)
-            .then((res) => {console.log('answer:', res.data.city)});
-        this.type === res.render('index', {
+        var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress; //'194.15.118.79'
+        if (ip.match(/^(([1-9]?\d|1\d\d|2[0-5][0-5]|2[0-4]\d)\.){3}([1-9]?\d|1\d\d|2[0-5][0-5]|2[0-4]\d)$/)) {
+            // just the simplest regex, randomely found on SOF
+            axios.get(`https://ipinfo.io/${ip}/`)
+                .then((ipQueryResult) => {
+                    //console.log('answer:', ipQueryResult.data.city);
+                    this._renderIndex(res, ip, ipQueryResult.data.city);
+                });
+        } else {
+            this._renderIndex(res);
+        }
+
+
+    };
+    _renderIndex (res, ip, city) {
+        res.render('index', {
             title: 'Weather app',
             env: {
-                isProd: isProd,
-                clientIp: ip || 'unknown'
+                isProd: isProd, // todo: make not a global
+                clientIp: ip || '',
+                clientCity: city || ''
             }
         });
-    };
+    }
 
     setupPaths () {
         this.app.set('view engine', 'jade');

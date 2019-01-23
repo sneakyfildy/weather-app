@@ -17,7 +17,7 @@ const CityList = (props) => {
             }
 
             return <div
-                onClick={() => props.dispatch(selectCity(city.__key__))}
+                onClick={() => props.dispatch(selectCity(city.__key__, city.title))}
                 className={className}
                 key={city.__key__} {...city}
                 >
