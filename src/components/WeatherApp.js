@@ -13,25 +13,25 @@ export default class WeatherApp extends React.Component {
         };
     }
     componentDidMount() {
-        axios.post('/api/weather', {
-            location: {
-                title: 'aaaa'
-            },
-            forecast: {
-                week: [
-                    {
-                        timestamp: new Date().getTime(),
-                        date_human: new Date().toLocaleString()
-                    }
-                ]
-            }
-        })
-        .then(function (response) {
-            console.log(response);
-        })
-        .catch(function (error) {
-            console.log(error);
-        });
+//        axios.post('/api/weather', {
+//            location: {
+//                title: 'aaaa'
+//            },
+//            forecast: {
+//                week: [
+//                    {
+//                        timestamp: new Date().getTime(),
+//                        date_human: new Date().toLocaleString()
+//                    }
+//                ]
+//            }
+//        })
+//        .then(function (response) {
+//            console.log(response);
+//        })
+//        .catch(function (error) {
+//            console.log(error);
+//        });
     }
     componentDidUpdate(prevProps, prevState) {
     }

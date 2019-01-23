@@ -1,6 +1,6 @@
 const firebase = require('./firebase/firebase');
 const isTest = process.env.NODE_ENV === 'test';
-const port = isTest ? 6666 : (process.env.PORT || 5556);
+const port = isTest ? Math.floor(Math.random() * (20000 - 10000) + 10000) : (process.env.PORT || 5556);
 
 const express = require('express');
 const httpModule = require('http');
@@ -30,7 +30,7 @@ class ServerConstructor extends AbstractServer {
 
         this.weatherDbi = new FirebaseDBI(firebase, 'weather');
         this.app = express();
-        const http = httpModule.Server(this.app);
+        this.http = httpModule.Server(this.app);
         //socket(http);
         this.port = port;
         this.setupPaths();
@@ -42,7 +42,7 @@ class ServerConstructor extends AbstractServer {
 //            });
 //        });
 
-        http.listen(this.port, () => {
+        this.http.listen(this.port, () => {
             console.log('Server started; port: ' + this.port);
         });
 
@@ -79,7 +79,7 @@ class ServerConstructor extends AbstractServer {
     }
 
     handleGetWeatherData (req, res) {
-        console.log('GET', req.body, req.params, req.query);
+        //console.log('GET', req.body, req.params, req.query);
         try {
             this.weatherDbi.getItems(req.query)
                 .then((snapshot) => {
@@ -102,9 +102,8 @@ class ServerConstructor extends AbstractServer {
         }
     }
 
-
     handlePostWeatherData (req, res) {
-        console.log('POST', req.body);
+        //console.log('POST', req.body);
         try {
             this.weatherDbi.addItem(req.body);
             res.end(returnStatus.successResponse());
