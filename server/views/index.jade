@@ -4,8 +4,8 @@ html()
 
     if !!env.isProd
         link(rel='stylesheet', href='/app.bundle.min.css')
-    link(rel='icon', type='image/png', href='favicon-32x32.png', size='32x32')
-    link(rel='icon', type='image/png', href='favicon-16x16.png', size='16x16')
+
+    link(rel='stylesheet', href='https://fonts.googleapis.com/css?family=Roboto:300,400,400i,500,700')
 
     meta(contet='text/html; charset=UTF-8', http-equiv='Content-Type')
     meta(name='viewport', content='width=device-width, initial-scale=1.0')
@@ -17,6 +17,8 @@ html()
         };
   body()
     div(id="app")
+    div.
+        <div style="opacity:0.7;">Icons made by <a href="https://www.flaticon.com/authors/iconixar" title="iconixar">iconixar</a> from <a href="https://www.flaticon.com/" 			    title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
     if !!env.isProd
         script(type='text/javascript', src='/app.bundle.min.js')
     else

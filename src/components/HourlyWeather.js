@@ -7,7 +7,7 @@ import NoDataSorry from './NoDataSorry';
 import selectCities from '../selectors/cities';
 import { selectCity } from '../actions/citySelector';
 
-import { capitalize, getDateLabel } from '../services/common-utils';
+import { capitalize, getDateLabel, imgMap } from '../services/common-utils';
 import * as _ from 'lodash';
 
 export class HourlyWeather extends React.Component {
@@ -66,12 +66,23 @@ export class HourlyWeather extends React.Component {
                 return (
                     <div
                         key={weatherData.date_txt}
-                        className="weather-panel-item weekly"
+                        className="weather-panel-item hourly"
                         >
+                            <div className="weather-description">
+                                {weatherData.weather.main}
+                            </div>
+
                             <div className="date-info">{momentData.format("HH:mm")}</div>
-                            <div>max: {weatherData.main.temp_max}</div>
-                            <div>min: {weatherData.main.temp_min}</div>
-                            <div className="weather-description">{weatherData.weather.main}</div>
+
+                            <div className="temperatures">
+                                <div className="high">
+                                    {weatherData.main.temp_max}
+                                </div>
+                                <div className="low">
+                                    {weatherData.main.temp_min}
+                                </div>
+                            </div>
+                         <img className="icon" src={imgMap[weatherData.weather.icon]}/>
                     </div>
                 );
             }
@@ -85,7 +96,9 @@ export class HourlyWeather extends React.Component {
             {this.props.weather.isLoading &&
                 <span className="loading-mask">Weather is loading...</span>}
             {!!this.props.weather.weekly &&
-                <div className="weather-panel">{this.renderHourlyData()}</div>}
+                <div className="weather-panel hourly">
+                    {this.renderHourlyData()}
+                </div>}
             </div>
         );
     }

@@ -1,3 +1,4 @@
+import * as _ from 'lodash';
 import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from "react-router";
@@ -7,8 +8,7 @@ import NoDataSorry from './NoDataSorry';
 import selectCities from '../selectors/cities';
 import { selectCity } from '../actions/citySelector';
 
-import { capitalize, getDateLabel } from '../services/common-utils';
-import * as _ from 'lodash';
+import { capitalize, getDateLabel, imgMap } from '../services/common-utils';
 
 export class WeeklyWeather extends React.Component {
     onWeatherItemClick(dateLabel) {
@@ -36,45 +36,34 @@ export class WeeklyWeather extends React.Component {
     }
 
     renderWeeklyData() {
+        const pageDateLabel = this.props.match.params.dateLabel;
         this.updateNextWeekDates();
         return this.nextWeek.map((dateLabel) => {
             const weatherData = this.props.weather.weekly[dateLabel];
             if (weatherData) {
                 let momentData = moment(weatherData.moment);
+                let className = "weather-panel-item weekly clickable ";
+                className += weatherData.date_txt === pageDateLabel ? 'active' : '';
                 // todo: imporve as stateless functional (or even a regular) cmp
                 return (
                     <div
                         key={weatherData.date_txt}
-                        className="weather-panel-item weekly clickable"
+                        className={className}
                         onClick={() => {this.onWeatherItemClick(weatherData.date_txt)}}
                         >
-                            <div className="date-info">{momentData.format("ddd, MMM Do")}</div>
-                            <div>max: {weatherData.main.temp_max}</div>
-                            <div>min: {weatherData.main.temp_min}</div>
+                            <div className="date-info">
+                                {momentData.format("ddd, MMM Do")}
+                            </div>
                             <div className="weather-description">{weatherData.weather.main}</div>
-                    </div>
-                );
-            }
-        });
-    }
-
-    renderNoData() {
-        this.updateNextWeekDates();
-        return this.nextWeek.map((dateLabel) => {
-            const weatherData = this.props.weather.weekly[dateLabel];
-            if (weatherData) {
-                let momentData = moment(weatherData.moment);
-                // todo: imporve as stateless functional (or even a regular) cmp
-                return (
-                    <div
-                        key={weatherData.date_txt}
-                        className="weather-panel-item weekly clickable"
-                        onClick={() => {this.onWeatherItemClick(weatherData.date_txt)}}
-                        >
-                            <div className="date-info">{momentData.format("ddd, MMM Do")}</div>
-                            <div>max: {weatherData.main.temp_max}</div>
-                            <div>min: {weatherData.main.temp_min}</div>
-                            <div className="weather-description">{weatherData.weather.main}</div>
+                            <div className="temperatures">
+                                <div className="high">
+                                    {weatherData.main.temp_max}
+                                </div>
+                                <div className="low">
+                                    {weatherData.main.temp_min}
+                                </div>
+                            </div>
+                            <img className="icon" src={imgMap[weatherData.weather.icon]}/>
                     </div>
                 );
             }
@@ -84,11 +73,18 @@ export class WeeklyWeather extends React.Component {
     render() {
         return (
             <div className="weekly-weather-component">
-            <div className="component-caption">Next week</div>
             {this.props.weather.isLoading &&
                 <span className="loading-mask">Weather is loading...</span>}
             {!!this.props.weather.weekly &&
-                <div className="weather-panel">{this.renderWeeklyData()}</div>}
+                (
+                <div>
+                    <div className="component-caption">Next week</div>
+                    <div className="weather-panel weekly">
+                        {this.renderWeeklyData()}
+                    </div>
+                </div>
+                )
+            }
             {!this.props.weather.weekly && !this.props.weather.isLoading &&
                 <NoDataSorry section="location"/>}
             </div>

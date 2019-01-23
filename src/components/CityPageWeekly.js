@@ -18,7 +18,7 @@ export class CityPageWeekly extends CityPage {
     render() {
         return (
             <div>
-                city page: {this.props.match.params.city}
+                {/* city page: {this.props.match.params.city} */}
                 <WeeklyWeather />
             </div>
         );

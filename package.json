@@ -25,6 +25,7 @@
   },
   "homepage": "https://github.com/sneakyfildy/weather-app#readme",
   "devDependencies": {
+    "autoprefixer": "^9.4.6",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.3",
     "babel-loader": "^7.1.5",
@@ -44,6 +45,7 @@
     "nodemon": "^1.18.9",
     "nodemon-webpack-plugin": "^4.0.7",
     "optimize-css-assets-webpack-plugin": "^5.0.1",
+    "postcss-loader": "^3.0.0",
     "sass-loader": "^7.1.0",
     "style-loader": "^0.23.1",
     "uglifyjs-webpack-plugin": "^2.1.1",

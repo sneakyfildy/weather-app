@@ -8,7 +8,7 @@ class DebugControls extends React.Component {
 
     render (){
         return (
-            <div>
+            <div className="debug-controls-component">
                 <button onClick={() => this.props.dispatch(clearDb('weather'))}
                 >Clear Weather DB</button>
                 <button onClick={() => this.props.dispatch(clearDb('cities'))}

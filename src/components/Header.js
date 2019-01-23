@@ -22,8 +22,10 @@ export class Header extends React.Component {
     render() {
         return (
             <header>
-                <h1>Weather app</h1>
-                <DebugControls />
+                <div className="header-inner-wrap">
+                    <span className="logo-text">Weather app</span>
+                    <DebugControls />
+                </div>
                 <CitySelector />
             </header>
         );

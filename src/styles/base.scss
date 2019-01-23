@@ -1,14 +1,45 @@
+@import './!vars.scss';
 @import './city-selector.scss';
 @import './weather-panel.scss';
 @import './weekly-weather.scss';
 
-body {
-    font-family: Arial;
+// Mixin itself
+@mixin clearfix() {
+  &::after {
+    display: block;
+    content: "";
+    clear: both;
+  }
 }
-.clickable {
-    cursor: pointer;
-}
-.first-matching {
-    background: #555;
-    color: #fff;
+
+
+.weather-app-container {
+    font-family: 'Roboto', sans-serif;
+    max-width: 1025px;
+    margin: 0 auto;
+    color: $text-color;
+    min-height: 800px;
+
+    .clickable {
+        cursor: pointer;
+    }
+/* didn't made it properly, better hide at all' */
+/*    .first-matching {
+        background: #555;
+        color: #fff;
+    }*/
+
+    .header-inner-wrap {
+        @include clearfix;
+
+        .logo-text {
+            font-size: 2em;
+            float: left;
+            font-weight: 200;
+        }
+    }
+
+    .debug-controls-component {
+        float: right;
+    }
 }

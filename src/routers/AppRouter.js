@@ -9,7 +9,7 @@ import Header from '../components/Header';
 
 const AppRouter = () => (
     <BrowserRouter>
-        <div>
+        <div className="weather-app-container">
             <Header />
             <Switch>
                 <Route path="/" component={StartPage} exact={true} />

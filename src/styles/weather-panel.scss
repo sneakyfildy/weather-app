@@ -1,13 +1,130 @@
+@import './!vars.scss';
+
 .weather-panel {
     padding: 4px 10px;
 
+    &.weekly {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    &.hourly {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
     .weather-panel-item {
         display: inline-block;
+        position: relative;
         padding: 8px 8px;
-        border: 1px solid #ddd;
+        border: 1px solid #eee;
+        overflow: hidden;
+        transition: (background-color .2s ease-in-out);
 
-        &.clicakble:hover {
+        &.hourly {
+            width: 115px;
+            margin: 5px;
+            height: 75px;
+
+            .date-info {
+                font-size: 1.3em;
+                float: left;
+            }
+        }
+
+        .container {
+            position: absolute;
+            z-index: 2;
+        }
+
+        &.active {
+            background-color: #2ab748;
+            color: $text-color-white;
+            border-color: #2b9640;
+            box-shadow: 0 0 7px -1px #347040;
+
+            &.clickable:hover {
+                /*I use LESS function to do that automatically*/
+                background-color: #47c661;
+            }
+
+            .weather-description {
+                color: $lighter-text-color-white;
+            }
+            .temperatures .low {
+                color: $lighter-text-color-white-2;
+            }
+        }
+
+        &.clickable:hover {
             background-color: #efefef;
+        }
+
+        .date-info {
+            font-size: 1.1em;
+            position: relative;
+            z-index: 2;
+        }
+
+        .weather-description {
+            font-size: 0.9em;
+            color: $lighter-text-color;
+            margin-bottom: 5px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .temperatures {
+            float: right;
+            position: relative;
+            z-index: 2;
+
+            .high, .low {
+                &::after {
+                    content: "\2103";
+                    font-size: 0.8em;
+                }
+            }
+
+            .high {
+                font-size: 1.3em;
+            }
+
+            .low {
+                font-size: 0.8em;
+                color: $lighter-text-color-2;
+                text-align: right;
+            }
+        }
+
+        .icon {
+            width: 68px;
+            position: absolute;
+            left: -9px;
+            bottom: -15px;
+            z-index: 1;
+            opacity: 0.75;
+        }
+    }
+}
+
+@media (max-width: 650px) {
+    .weather-panel {
+        padding: 2px;
+
+        &.weekly {
+            display: block;
+        }
+        &.hourly {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+        }
+
+        .weather-panel-item {
+            /* I can do a proper fitment, but need more time */
+            width: 28%;
         }
     }
 }

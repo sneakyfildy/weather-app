@@ -29,17 +29,16 @@ class CitySelector extends React.Component {
             this.setState({
                 isFocused: false
             });
-        }, 600);
+        }, 300);
     }
     render (){
         return (
             <div className="city-selector-component">
-                city {this.state.isFocused ? 'focus' : 'no focus'}
                 <div className="input-container">
                     <input
                         type="text"
                         value={this.props.filters.text}
-                        placeholder="Filter by city; ESC to clear"
+                        placeholder="Filter by city; Focus to see the list; ESC to clear"
                         onChange={(e) => {
                             this.props.dispatch(setTextFilter(e.target.value));
                         }}

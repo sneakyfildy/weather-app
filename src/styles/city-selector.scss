@@ -1,17 +1,31 @@
 .city-selector-component {
+    padding: 10px 0;
     .input-container {
         position: relative;
+
+        input {
+            padding: 10px 5px;
+            font-size: 1.2em;
+            width: 480px;
+            border: 1px solid #eee;
+            transition: (border-color .2s ease-in-out);
+
+            &:hover {
+                border-color: #ddd;
+            }
+        }
     }
 
     .city-chooser-list {
         display: block;
         position: absolute;
-        top: 25px;
+        z-index: 1;
+        top: 47px;
         left: 0px;
         width: 200px;
         background: white;
 /*        padding: 3px 16px;*/
-        box-shadow: 0 0 10px -3px;
+        box-shadow: 0 0 5px -1px #777;
 
         &.hidden {
             display: none;
@@ -19,6 +33,7 @@
 
         .list-item {
             padding: 3px 5px;
+
             &:hover {
                 background-color: #5b40d1;
                 color: #fff;
