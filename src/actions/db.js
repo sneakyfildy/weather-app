@@ -33,6 +33,13 @@ const citiesList = [
         code: 1234,
         high: 0,
         low: -22
+    },
+    {
+        title: 'moscow',
+        country: 'Russia',
+        code: 12345,
+        high: -10,
+        low: -45
     }
 ];
 
