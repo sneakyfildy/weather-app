@@ -6,21 +6,8 @@ import selectCities from '../selectors/cities';
 // hardcoded set of cities here at the moment
 const citiesReducerDefaultState = {
     items: [
-//        {
-//            id: uuid(),
-//            title: 'azazaz'
-//        },
-//        {
-//            id: uuid(),
-//            title: 'ololo'
-//        },
-//        {
-//            id: uuid(),
-//            title: 'zlo'
-//        }
     ],
-    selectedId: null,
-    selectedItem: null
+    selectedItem: {}
 };
 
 export default (state = citiesReducerDefaultState, action) => {
@@ -28,23 +15,22 @@ export default (state = citiesReducerDefaultState, action) => {
         case types.CITY_SELECTOR_PICK:
             return {
                 ...state,
-                selectedId: action.value,
-                selectedItem: state.items.filter((item) => item.__key__ === action.value)[0]
+                selectedItem: {
+                    title: action.cityTitle
+                }
             };
         case types.CITY_FILTER_SUBMIT:
             if (!!action.value) {
                 const matchingItems = selectCities(state.items, {text: action.value});
                 return {
                     ...state,
-                    selectedId: matchingItems[0] && matchingItems[0].id || null,
-                    selectedItem: matchingItems[0] || null
+                    selectedItem: matchingItems[0] || {}
 
                 };
             } else return state;
         case types.CITIES_RECEIVED:
             return {
                 items: action.cities.slice(),
-                selectedId: state.selectedId,
                 selectedItem: state.selectedItem
             };
         default:

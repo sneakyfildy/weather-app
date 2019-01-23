@@ -1,3 +1,4 @@
+import { capitalize } from '../services/common-utils';
 import types from '../action_types';
 const cityFilterDefaultState = {
     text: ''
@@ -15,6 +16,12 @@ export default (state = cityFilterDefaultState, action) => {
             return {
                 ...state,
                 text: ''
+            };
+        case types.CITY_SELECTOR_PICK:
+            // todo: may be fired by another action
+            return {
+                ...state,
+                text: capitalize(action.cityTitle)
             };
         default:
             return state;

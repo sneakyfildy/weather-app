@@ -2,8 +2,11 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { setTextFilter, submitFilter, clearFilter } from '../actions/filters';
 
+import CityList from './CityList';
+
 class CitySelector extends React.Component {
-    state = {};
+    // local state
+    state = {isFocused: false};
 
     onKeyDown(e) {
         switch(e.keyCode) {
@@ -15,20 +18,37 @@ class CitySelector extends React.Component {
                 break;
         }
     }
+    onFocus () {
+        this.setState({
+            isFocused: true
+        });
+    }
 
+    onBlur () {
+        setTimeout(() => {
+            this.setState({
+                isFocused: false
+            });
+        }, 600);
+    }
     render (){
         return (
-            <div>
-                city
-                <input
-                    type="text"
-                    value={this.props.filters.text}
-                    placeholder="Filter by city; ESC to clear"
-                    onChange={(e) => {
-                        this.props.dispatch(setTextFilter(e.target.value));
-                    }}
-                    onKeyDown={(e) => this.onKeyDown(e)}
-                />
+            <div className="city-selector-component">
+                city {this.state.isFocused ? 'focus' : 'no focus'}
+                <div className="input-container">
+                    <input
+                        type="text"
+                        value={this.props.filters.text}
+                        placeholder="Filter by city; ESC to clear"
+                        onChange={(e) => {
+                            this.props.dispatch(setTextFilter(e.target.value));
+                        }}
+                        onFocus={ () => this.onFocus() }
+                        onBlur={ () => this.onBlur() }
+                        onKeyDown={(e) => this.onKeyDown(e)}
+                    />
+                    <CityList isVisible={this.state.isFocused}/>
+                </div>
             </div>
         );
     }
@@ -36,7 +56,8 @@ class CitySelector extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        filters: state.filters
+        filters: state.filters,
+        selectedCity: state.cities.selectedItem.title
     };
 };
 

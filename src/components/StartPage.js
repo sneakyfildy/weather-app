@@ -40,8 +40,6 @@ export class StartPage extends React.Component {
     }
 }
 
-// Create a new component that is "connected" (to borrow redux
-// terminology) to the router.
 const StartPageWithRouter = withRouter(connect()(StartPage));
 
 export default StartPageWithRouter

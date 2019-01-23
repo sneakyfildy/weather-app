@@ -3,32 +3,32 @@ import axios from 'axios';
 import moment from 'moment';
 
 import types from '../action_types';
-
+import { getDateLabel } from '../services/common-utils';
 
 const citiesList = [
     {
-        title: 'Zaragoza',
+        title: 'zaragoza',
         country: 'Spain',
         code: 1,
         high: 20,
         low: 7
     },
     {
-        title: 'Madrid',
+        title: 'madrid',
         country: 'Spain',
         code: 2,
         high: 17,
         low: 3
     },
     {
-        title: 'Ronda',
+        title: 'ronda',
         country: 'Spain',
         code: 3,
         high: 15,
         low: 0
     },
     {
-        title: 'Glazov',
+        title: 'glazov',
         country: 'Russia',
         code: 1234,
         high: 0,
@@ -140,7 +140,7 @@ function genWeather(city, high, low) {
     const data = {
         city: {
             __key__: city.__key__,
-            name: city.title,
+            title: city.title,
             country: city.country,
             code: city.code
         }
@@ -151,7 +151,6 @@ function genWeather(city, high, low) {
 }
 
 function genWeekly(high, low, cityCode) {
-    const tsFormat = 'YYYY-D-MM';
     let date = moment();
     date.set('hour', 12);
     date.set('minute', 0);
@@ -162,7 +161,7 @@ function genWeekly(high, low, cityCode) {
         // me-he-he ^^
         let weatherIndex = rand(cityCode === 1 ? 4 : 0, weatherTypes.length);
         let day = {
-            date_txt: date.format(tsFormat),
+            date_txt: getDateLabel('weekly', date),
             moment: date.format(),
             ts: date.valueOf(),
             main: getTemp(high, low),
@@ -177,7 +176,6 @@ function genWeekly(high, low, cityCode) {
 }
 
 function genHourly(dayDate, high, low, cityCode) {
-    const tsFormat = 'YYYY-D-MM_HH';
     let date = moment(dayDate); // clone
     date.set('hour', 0);
     date.set('minute', 0);
@@ -188,7 +186,7 @@ function genHourly(dayDate, high, low, cityCode) {
         // me-he-he ^^
         let weatherIndex = rand(cityCode === 1 ? 4 : 0, weatherTypes.length);
         let hour = {
-            date_txt: date.format(tsFormat),
+            date_txt: getDateLabel('hourly', date),
             moment: date.format(),
             ts: date.valueOf(),
             main: getTemp(high, low),

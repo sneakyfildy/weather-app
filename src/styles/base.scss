@@ -1,9 +1,12 @@
+@import './city-selector.scss';
+@import './weather-panel.scss';
+@import './weekly-weather.scss';
+
 body {
     font-family: Arial;
 }
 .clickable {
     cursor: pointer;
-    border: 1px dashed;
 }
 .first-matching {
     background: #555;

@@ -3,16 +3,12 @@ const firebase = require('../firebase/firebase');
 class FirebaseInterface {
     constructor(rootNodeName) {
         this.rootNodeName = rootNodeName;
-        this.firebaseChildMap = {
-            'location_title': 'location/title',
-            'location_id': 'location/id'
-        };
     }
     getItems(clientQuery) {
         let ref = this.getRoot();
         let query;
         if (!!clientQuery.child) {
-            const fbChildPath = this.firebaseChildMap[clientQuery.child];
+            const fbChildPath = clientQuery.child.replace(/_/g, '/');
             if (!!fbChildPath) {
                 query = ref.orderByChild(fbChildPath);
             }

@@ -3,7 +3,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import CitySelector from './CitySelector';
-import CityList from './CityList';
 import DebugControls from './DebugControls';
 import { getCities } from '../actions/db';
 
@@ -26,7 +25,6 @@ export class Header extends React.Component {
                 <h1>Weather app</h1>
                 <DebugControls />
                 <CitySelector />
-                <CityList />
             </header>
         );
     }

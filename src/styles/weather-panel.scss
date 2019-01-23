@@ -1,0 +1,13 @@
+.weather-panel {
+    padding: 4px 10px;
+
+    .weather-panel-item {
+        display: inline-block;
+        padding: 8px 8px;
+        border: 1px solid #ddd;
+
+        &.clicakble:hover {
+            background-color: #efefef;
+        }
+    }
+}
