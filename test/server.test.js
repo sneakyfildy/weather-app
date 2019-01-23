@@ -8,7 +8,7 @@ const networkMessages = require('../server/network/messages');
 
 chai.use(chaiHttp);
 
-describe('WeatherDBI', () => {
+describe('Common backend features', () => {
     afterAll(() => {
         console.log('running afterAll...');
         server.http.close(() => console.log('Stop server'));

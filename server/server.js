@@ -14,21 +14,14 @@ console.log(`Node.js Server isProd: ${isProd}`);
 httpModule.globalAgent.options.ca = require('ssl-root-cas/latest').create();
 const bodyParser = require('body-parser');
 
-const FirebaseDBI = require('./data/FirebaseDBI');
 const returnStatus = require('./network/returnStatus');
-const AbstractServer = require('./network/AbstractServer');
+const AbstractNetworkComponent = require('./network/AbstractNetworkComponent');
+const AbstractAPI = require('./network/AbstractAPI');
 const networkMessages = require('../server/network/messages');
 
-class ServerConstructor extends AbstractServer {
+class ServerConstructor extends AbstractNetworkComponent {
     constructor () {
         super();
-        this.weatherApiMap = {
-            GET: (req, res) => this.handleGetWeatherData(req, res),
-            POST: (req, res) => this.handlePostWeatherData(req, res),
-            DELETE: (req, res) => this.handleClearWeatherData(req, res)
-        };
-
-        this.weatherDbi = new FirebaseDBI(firebase, 'weather');
         this.app = express();
         this.http = httpModule.Server(this.app);
         //socket(http);
@@ -50,10 +43,16 @@ class ServerConstructor extends AbstractServer {
     }
 
     indexPage (req, res) {
+        var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+        let axios = require('axios');
+        console.log('ip', ip);
+        axios.get(`https://ipinfo.io/${ip}/`)
+            .then((res) => {console.log('answer:', res.data.city)});
         this.type === res.render('index', {
             title: 'Weather app',
             env: {
-                isProd: isProd
+                isProd: isProd,
+                clientIp: ip || 'unknown'
             }
         });
     };
@@ -64,74 +63,22 @@ class ServerConstructor extends AbstractServer {
         this.app.use(express.static('dist'));
         this.app.use( bodyParser.json() );
 
-        // GET
-        this.app.get('/api/weather', this.handleApiRequest.bind(this, this.weatherApiMap.GET));
-        // CREATE
-        this.app.post('/api/weather', this.handleApiRequest.bind(this, this.weatherApiMap.POST));
-        // CLEAR
-        this.app.delete('/api/weather', this.handleApiRequest.bind(this, this.weatherApiMap.DELETE));
+        this.weatherAPI = new AbstractAPI({apiName: 'weather'});
+        this.weatherAPI.init(this.app);
 
-        this.app.get('/', this.indexPage.bind(this));
-        this.app.use((req, res) => {
+        this.cityAPI = new AbstractAPI({apiName: 'cities'});
+        this.cityAPI.init(this.app);
+
+        this.app.get('/api/*', (req, res) => {
+            //this.indexPage(req, res);
             res.setHeader('Content-Type', 'application/json');
             this.returnError(res, 404, networkMessages.API_NOT_FOUND);
         });
+
+        //this.app.get('/', this.indexPage.bind(this));
+        this.app.get('*', this.indexPage.bind(this));
+
     }
-
-    handleGetWeatherData (req, res) {
-        //console.log('GET', req.body, req.params, req.query);
-        try {
-            this.weatherDbi.getItems(req.query)
-                .then((snapshot) => {
-                    let val = snapshot.val();
-                    let arr = [];
-                    snapshot.forEach((snapshotItem) => {
-                        arr.push({
-                            __key__: snapshotItem.key,
-                            ...snapshotItem.val()
-                        });
-                    });
-                    //console.log('snapshot', val, arr);
-                    res.end(returnStatus.successResponse(arr));
-                })
-                .catch((err) => {
-                    this.returnError(res, 500, 'Something went wrong adding new weather data', err);
-                });
-        } catch(err) {
-            this.returnError(res, 500, 'Something went wrong adding new weather data', err);
-        }
-    }
-
-    handlePostWeatherData (req, res) {
-        //console.log('POST', req.body);
-        try {
-            this.weatherDbi.addItem(req.body);
-            res.end(returnStatus.successResponse());
-        } catch(err) {
-            this.returnError(res, 500, 'Something went wrong adding new weather data', err);
-        }
-    }
-
-    handleClearWeatherData (req, res) {
-        try {
-            this.weatherDbi.clear();
-            res.end(returnStatus.successResponse());
-        } catch(err) {
-            this.returnError(res, 500, 'Something went wrong clearing all weather data', err);
-        }
-    }
-
-    returnError(res, status, prodErrorMessage, exception) {
-        // message selection logic: if this is 'prod' or there is no exception,
-        // then use prodErrorMessage, otherwise - exception (not a prod and got exception)
-        return res
-            .status(status)
-            .end(returnStatus
-                .errorResponse(isProd || !exception ? prodErrorMessage : exception.message)
-            );
-    }
-
-
 }
 
 const backendInstance = new ServerConstructor();

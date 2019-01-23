@@ -1,4 +1,4 @@
-import uuid from 'uuid';
+//import uuid from 'uuid';
 
 import types from '../action_types';
 import selectCities from '../selectors/cities';
@@ -6,18 +6,18 @@ import selectCities from '../selectors/cities';
 // hardcoded set of cities here at the moment
 const citiesReducerDefaultState = {
     items: [
-        {
-            id: uuid(),
-            title: 'azazaz'
-        },
-        {
-            id: uuid(),
-            title: 'ololo'
-        },
-        {
-            id: uuid(),
-            title: 'zlo'
-        }
+//        {
+//            id: uuid(),
+//            title: 'azazaz'
+//        },
+//        {
+//            id: uuid(),
+//            title: 'ololo'
+//        },
+//        {
+//            id: uuid(),
+//            title: 'zlo'
+//        }
     ],
     selectedId: null,
     selectedItem: null
@@ -29,7 +29,7 @@ export default (state = citiesReducerDefaultState, action) => {
             return {
                 ...state,
                 selectedId: action.value,
-                selectedItem: state.items.filter((item) => item.id === action.value)[0]
+                selectedItem: state.items.filter((item) => item.__key__ === action.value)[0]
             };
         case types.CITY_FILTER_SUBMIT:
             if (!!action.value) {
@@ -40,7 +40,13 @@ export default (state = citiesReducerDefaultState, action) => {
                     selectedItem: matchingItems[0] || null
 
                 };
-            } else return state
+            } else return state;
+        case types.CITIES_RECEIVED:
+            return {
+                items: action.cities.slice(),
+                selectedId: state.selectedId,
+                selectedItem: state.selectedItem
+            };
         default:
             return state;
     }

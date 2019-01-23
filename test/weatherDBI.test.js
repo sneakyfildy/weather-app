@@ -5,14 +5,14 @@ const should = chai.should();
 const expect = global.expect;
 chai.use(chaiHttp);
 
-describe('WeatherDBI', () => {
+describe('WeatherAPI', () => {
     afterAll(() => {
         console.log('running afterAll...');
         server.http.close(() => console.log('Stop server'));
     });
     beforeEach((done) => { //Before each test we empty the database
         // notice that not API is called, but a direct method of DBI
-        server.weatherDbi.clear()
+        server.weatherAPI._commonDelete()
             .then(() => done())
             .catch((err ) => {
                 console.error('While clearing', err);
@@ -28,7 +28,7 @@ describe('WeatherDBI', () => {
             chai.request(server.app)
                 .post('/api/weather')
                 .send({
-                    value: expectedValue
+                    data: {value: expectedValue}
                 })
                 .end((err, res) => {
                     expect(res.body.success).toBe(true);
@@ -67,7 +67,7 @@ describe('WeatherDBI', () => {
             };
             chai.request(server.app)
                 .post('/api/weather')
-                .send(createdRecord)
+                .send({data: createdRecord})
                 .end((err, res) => {
                     // we are expecting that a partcular record was added,
                     // let's query for it

@@ -1,9 +1,8 @@
-const AbstractFirebaseDBI = require('./AbstractFirebaseDBI');
+const firebase = require('../firebase/firebase');
 
-class FirebaseDBI extends AbstractFirebaseDBI{
-    constructor(firebaseInstance, rootNodeName) {
-        super(firebaseInstance, rootNodeName);
-
+class FirebaseInterface {
+    constructor(rootNodeName) {
+        this.rootNodeName = rootNodeName;
         this.firebaseChildMap = {
             'location_title': 'location/title',
             'location_id': 'location/id'
@@ -27,17 +26,22 @@ class FirebaseDBI extends AbstractFirebaseDBI{
         return (query || ref).once('value');
     }
 
-    addItem(item) {
-        return this.getRoot().push(item);
+    addItems(items) {
+        let lastPromise;
+        items.map((item, index) => {
+            console.log('push!', index);
+            lastPromise = this.getRoot().push(item);
+        });
+        return lastPromise;
     }
 
     clear() {
         return this.getRoot().set({});
     }
 
-    getRoot() {
-        return this.firebase.database().ref(this.rootNodeName);
+    getRoot(rootNodeName) {
+        return firebase.database().ref(this.rootNodeName);
     }
 };
 
-module.exports = FirebaseDBI;
+module.exports = FirebaseInterface;

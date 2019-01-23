@@ -1,10 +1,11 @@
-import '../styles/base.scss';
 import axios from 'axios';
 import React from 'react';
 import { connect } from 'react-redux';
+import { withRouter } from "react-router";
+//
 import { getCities } from '../actions/db';
 
-export class WeatherApp extends React.Component {
+export class StartPage extends React.Component {
     constructor(props) {
         super(props);
         this.title = 'Weather test';
@@ -12,7 +13,7 @@ export class WeatherApp extends React.Component {
         };
     }
     componentDidMount() {
-        this.props.dispatch(getCities());
+        this.props.history.push('/new-location');
     }
     componentDidUpdate(prevProps, prevState) {
     }
@@ -21,10 +22,14 @@ export class WeatherApp extends React.Component {
     render() {
         return (
             <div>
-                <h2>loloshecki</h2>
+            start page
             </div>
         );
     }
 }
 
-export default connect()(WeatherApp)
+// Create a new component that is "connected" (to borrow redux
+// terminology) to the router.
+const StartPageWithRouter = withRouter(StartPage);
+
+export default connect()(StartPageWithRouter)

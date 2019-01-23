@@ -1,13 +1,15 @@
-import '../styles/base.scss';
 import axios from 'axios';
 import React from 'react';
 import { connect } from 'react-redux';
+
+import CitySelector from './CitySelector';
+import CityList from './CityList';
+import DebugControls from './DebugControls';
 import { getCities } from '../actions/db';
 
-export class WeatherApp extends React.Component {
+export class Header extends React.Component {
     constructor(props) {
         super(props);
-        this.title = 'Weather test';
         this.state = {
         };
     }
@@ -20,11 +22,14 @@ export class WeatherApp extends React.Component {
     }
     render() {
         return (
-            <div>
-                <h2>loloshecki</h2>
-            </div>
+            <header>
+                <h1>Weather app</h1>
+                <DebugControls />
+                <CitySelector />
+                <CityList />
+            </header>
         );
     }
 }
 
-export default connect()(WeatherApp)
+export default connect()(Header)

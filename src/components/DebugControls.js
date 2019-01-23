@@ -1,19 +1,21 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { clearDb } from '../actions/db';
+
+import { clearDb, fillDbs } from '../actions/db';
 
 class DebugControls extends React.Component {
     state = {};
 
-    clearDb(e) {
-        this.props.dispatch(clearDb());
-    }
-
     render (){
         return (
             <div>
-                <button onClick={() => this.clearDb()}
-                >Clear DB</button>
+                <button onClick={() => this.props.dispatch(clearDb('weather'))}
+                >Clear Weather DB</button>
+                <button onClick={() => this.props.dispatch(clearDb('cities'))}
+                >Clear Cities DB</button>
+
+                <button onClick={() => this.props.dispatch(fillDbs())}
+                >Fill DB (prefixed cities and random weather)</button>
             </div>
         );
     }
