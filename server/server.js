@@ -50,6 +50,9 @@ class ServerConstructor extends AbstractNetworkComponent {
             axios.get(`https://ipinfo.io/${ip}/`)
                 .then((ipQueryResult) => {
                     this._renderIndex(res, ip, ipQueryResult.data.city);
+                })
+                .catch((err) => {
+                    this._renderIndex(res);
                 });
         } else {
             this._renderIndex(res);
